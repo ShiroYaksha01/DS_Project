@@ -8,7 +8,7 @@ Our programs (both client and server) were created in python language using xmlr
 <p>
 
 <p>
-In our application, the server side is responsible for adding two inputted numbers and give the result back to the client, whereas the client can input 2 numbers in the terminal and get the result back from the server. After the result, client can chooses to either continue the program or quit the program, by typing yes or no.
+In our application, the client can run the program in order to use a simple calculation that supports addition, subtraction, multiplication, anddivision. When the user click "Enter", the program will send the inputted numbers and operation sign to the server and let it does the maths operation, then send the result back to the client program.
 <p>
 
 # How to run the program
