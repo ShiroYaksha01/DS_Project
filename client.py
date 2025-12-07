@@ -13,9 +13,7 @@ def button_press(value):
 
 def equals():
     global equation_text
-
     try:
-        # Detect operator used
         if "+" in equation_text:
             a, b = equation_text.split("+")
             result = proxy.add(float(a), float(b))
@@ -36,7 +34,7 @@ def equals():
             equation_var.set("Invalid")
             equation_text = ""
             return
-        
+
         equation_var.set(str(result))
         equation_text = str(result)
 
@@ -49,54 +47,88 @@ def clear_screen():
     equation_text = ""
     equation_var.set("")
 
-
-# UI Setup
+# ================= UI SETUP =================
 window = Tk()
 window.title("RPC Calculator")
-window.geometry("580x415")
+window.geometry("420x600")
+window.configure(bg="#2c2c2c")
 
 equation_var = StringVar()
 
-display = Label(window, textvariable=equation_var, font=('Times New Roman',20), bg="white", width=38, height=2) 
-display.pack()
+# Display
+display = Label(
+    window,
+    textvariable=equation_var,
+    font=("Segoe UI", 24),
+    bg="#1e1e1e",
+    fg="white",
+    anchor="e",
+    height=2
+)
+display.pack(fill="x")
 
-frame = Frame(window)
-frame.pack()
+# Buttons frame (Rectangle area)
+frame = Frame(window, bg="#2c2c2c")
+frame.pack(expand=True, fill="both", padx=10, pady=10)
 
-# Number Buttons 0–9
-buttons = [
-    (7,0,0), (8,0,1), (9,0,2),
-    (4,1,0), (5,1,1), (6,1,2),
-    (1,2,0), (2,2,1), (3,2,2),
-    (0,2,3)
-]
+btn_font = ("Segoe UI", 16)
 
-for (num, r, c) in buttons:
-    if num == 0:
-        Button(frame, text=str(num), font=35, height=4, width=15,
-               command=lambda n=num: button_press(n)).grid(row=r, column=c)
-    else:
-        Button(frame, text=str(num), font=35, height=4, width=9,
-               command=lambda n=num: button_press(n)).grid(row=r, column=c)
+# Configure grid to expand evenly
+for i in range(5):  # columns
+    frame.columnconfigure(i, weight=1)
+for i in range(4):  # rows
+    frame.rowconfigure(i, weight=1)
 
-# Operation Buttons
-ops = [
-    ("+", 0, 3),
-    ("-", 1, 3),
-    ("*", 0, 4),
-    ("/", 1, 4),
-]
+def make_button(text, row, col, color, cmd, colspan=1, rowspan=1, fg="white"):
+    Button(
+        frame,
+        text=text,
+        bg=color,
+        fg=fg,
+        font=btn_font,
+        bd=0,
+        command=cmd
+    ).grid(
+        row=row, column=col,
+        columnspan=colspan, rowspan=rowspan,
+        sticky="nsew", padx=5, pady=5
+    )
 
-for (op, r, c) in ops:
-    Button(frame, text=op, font=35, height=4, width=15,
-           command=lambda o=op: button_press(o)).grid(row=r, column=c)
+# Numbers
+make_button("7", 0, 0, "#dcdcdc", lambda: button_press("7"), fg="black")
+make_button("8", 0, 1, "#dcdcdc", lambda: button_press("8"), fg="black")
+make_button("9", 0, 2, "#dcdcdc", lambda: button_press("9"), fg="black")
 
-# Equals Button
-Button(frame, text="Enter", font=35, height=4, width=15,
-       command=equals).grid(row=2, column=4)
+make_button("4", 1, 0, "#dcdcdc", lambda: button_press("4"), fg="black")
+make_button("5", 1, 1, "#dcdcdc", lambda: button_press("5"), fg="black")
+make_button("6", 1, 2, "#dcdcdc", lambda: button_press("6"), fg="black")
 
-# Clear Button
-Button(window, text="Clear", font=35, height=4, width=61,
-       command=clear_screen).pack()
+make_button("1", 2, 0, "#dcdcdc", lambda: button_press("1"), fg="black")
+make_button("2", 2, 1, "#dcdcdc", lambda: button_press("2"), fg="black")
+make_button("3", 2, 2, "#dcdcdc", lambda: button_press("3"), fg="black")
+
+# 0 spans three columns
+make_button("0", 3, 0, "#dcdcdc", lambda: button_press("0"), colspan=3, fg="black")
+
+# Operators
+make_button("+", 0, 3, "#f39c12", lambda: button_press("+"))
+make_button("-", 1, 3, "#f39c12", lambda: button_press("-"))
+make_button("*", 2, 3, "#f39c12", lambda: button_press("*"))
+make_button("/", 3, 3, "#f39c12", lambda: button_press("/"))
+
+# Equal button (full height)
+make_button("=", 0, 4, "#27ae60", equals, rowspan=4)
+
+# Clear button
+Button(
+    window,
+    text="Clear",
+    bg="#c0392b",
+    fg="white",
+    font=("Segoe UI", 14),
+    height=2,
+    bd=0,
+    command=clear_screen
+).pack(fill="x", padx=10, pady=10)
 
 window.mainloop()
